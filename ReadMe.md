@@ -1,5 +1,14 @@
 ## Parking Tickets
 
+
+## UI - ShowCase
+<div style="display:flex;flex-direction:row;gap:10px">
+<img src="./ouputs/all tickets.jpg" style='width:33.3%;height:auto;border-radius:5%'>
+<img src="./ouputs/add_screen.jpg" style='width:33.3%;height:auto;border-radius:5%' >
+<img src="./ouputs/full_details.jpg" style='width:33.3%;height:auto;border-radius:5%'>
+</div>
+
+
 ## Setup - Backend
 - **Note:Python is required (3.14 recommended)**
 

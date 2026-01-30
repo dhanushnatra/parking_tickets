@@ -1,5 +1,6 @@
 import { View,TextInput,TouchableOpacity,StyleSheet,Text} from "react-native";
 import  {useState} from 'react';
+import  {add_ticket} from './api_calls';
 
 export default function AddScreen({ navigation }){
 
@@ -19,9 +20,15 @@ export default function AddScreen({ navigation }){
 
         <TextInput placeholderTextColor={'#9D8AA6'} style={styles.txt_inp} onChangeText={(value)=>{set_description(value)}}  value={description} placeholder="Vehicle Description" ></TextInput>
     
-        <TouchableOpacity style={styles.sub_btn} onPress={()=>{
-            console.log('tried adding',{owner_name,description,vehicle_number})
-            navigation.navigate('home')
+        <TouchableOpacity style={styles.sub_btn} onPress={async()=>{
+            try{ 
+                await add_ticket(
+                    vehicle_number,description,owner_name
+                );
+                navigation.navigate('home')
+            } catch(error) {
+                console.error('Error adding ticket:', error);
+            }
         }}>
             <Text style={{color:"#9D8AA6",fontSize:20}}>Add</Text>
         </TouchableOpacity>

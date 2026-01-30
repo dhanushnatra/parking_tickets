@@ -1,57 +1,90 @@
 import {useEffect, useState} from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput,FlatList } from 'react-native';
-import { base_ip,get_all_tickets } from './api_calls';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput,FlatList,Image, Alert} from 'react-native';
+import { base_ip,get_all_tickets, set_ip } from './api_calls';
 import TicketTile from './ticket_tile'
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export default function Home({ navigation }) {
-  const [ip, setIp] = useState('')
-  const [tickets,setTickets]=useState(
-    [
-      {owner_name:"raju",amount:200,vehicle_number:"apadwadada"},
-      {owner_name:"raju",amount:200,vehicle_number:"apadwadada"},
-      {owner_name:"raju",amount:200,vehicle_number:"apadwadada"},
-      {owner_name:"raju",amount:200,vehicle_number:"apadwadada"},
-      {owner_name:"raju",amount:200,vehicle_number:"apadwadada"},
-      {owner_name:"raju",amount:200,vehicle_number:"apadwadada"},
-      {owner_name:"raju",amount:200,vehicle_number:"apadwadada"},
-    ]
-  );
+  const [ip, setIp] = useState(base_ip)
+  const [tickets,setTickets]=useState([]);
 
   useEffect(()=>{
     (async()=>{
       try{
+        await set_ip(ip);
         const data = await get_all_tickets();
         setTickets(data);
       }
       catch (error){
+        Alert.alert('failed get all',
+                    'fetch all tickets failed',
+                    )
+                [{text: 'OK', onPress: () => {}}]
         console.log(error);
       }
     })();
-  },[])
+  },[ip])
 
+  const fetch_new_ip = async()=>{
+      try{
+        await set_ip(ip);
+        const data = await get_all_tickets();
+        setTickets(data);
+      }
+      catch (error){
+        Alert.alert('failed get all',
+                    'fetch all tickets failed',
+                    )
+                [{text: 'OK', onPress: () => {}}]
+        console.log(error);
+      }
+    }
 
+  async function fetch_all(){
+    try{
+        await set_ip(ip);
+        const data = await get_all_tickets();
+        setTickets(data);
+      }
+      catch (error){
+        Alert.alert('failed get all',
+                    'fetch all tickets failed',
+                    )
+                [{text: 'OK', onPress: () => {}}]
+        console.log(error);
+      }
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
         <Text style={styles.NavText}>Parking Tickets</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('addScreen')}  style={styles.plusBtn}>
-          <Text style={styles.NavText}>+</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('addScreen')}>
+          <Image source={require('./assets/add.png')} style={{}}/>
         </TouchableOpacity>
       </View>
         <TextInput 
         value={ip} 
-        onChange={(val) => {setIp(val)}} 
+        onChange={setIp} 
+        onSubmitEditing={fetch_new_ip}
         placeholder='Enter Backend ip'
         style={styles.textInp}
         placeholderTextColor={"#9D8AA6"}
       />
-      <View >
+      <View style={styles.flatlist}>
+        <Text style={{fontSize:20,color:'#9D8AA6',marginBottom:10}}>All Tickets</Text>
       <FlatList
         data={tickets}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <TicketTile owner_name={item['owner_name']} vehicle_number={item['vehicle_number']} amount={item['amount']}/>
+          <TicketTile 
+            owner_name={item['owner_name']} 
+            vehicle_number={item['vehicle_number']} 
+            amount={item['amount']}
+            description={item['description']}
+            parked_at={item['parked_at']}
+            onDelete={fetch_all} 
+          />
                 )}
       />
 
@@ -87,6 +120,11 @@ const styles = StyleSheet.create({
   text: {
     color: "#9D8AA6"
   },
+  image: {
+    width: 150,
+    height: 150,
+    resizeMode: "contain",
+  },
   textInp:{
     backgroundColor:'#251430',
     paddingHorizontal:10,
@@ -96,5 +134,8 @@ const styles = StyleSheet.create({
     borderColor:"#9D8AA6",
     borderWidth:1,
     borderRadius:10,
+  },
+  flatlist:{
+    marginVertical:10,
   }
 });

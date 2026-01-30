@@ -2,7 +2,7 @@ var base_ip = '192.168.0.9'
 
 const baseUrl = `http://${base_ip}:8000/`
 
-const add_ticket = async ({vehicle_number, description, owner_name}) => {
+const add_ticket = async (vehicle_number, description, owner_name) => {
     const resp = await fetch(baseUrl+"tickets/", {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -10,15 +10,15 @@ const add_ticket = async ({vehicle_number, description, owner_name}) => {
     });
     if (resp.ok) {
         const data = await resp.json();
-        return data['ticket_id'];
+        return data['vehicle_number'];
     }
     else throw Error(`adding ${vehicle_number} failed`);
 }
 
-const delete_ticket = async ({ticket_id}) => {
-    const resp = await fetch(baseUrl+"tickets/" + ticket_id, {method: 'DELETE'});
+const delete_ticket = async (vehicle_number) => {
+    const resp = await fetch(baseUrl+"tickets/" + vehicle_number, {method: 'DELETE'});
     if (resp.ok) return;
-    else throw Error('error deleting ' + ticket_id);
+    else throw Error('error deleting ' + vehicle_number);
 }
 
 const get_all_tickets = async () => {
@@ -31,10 +31,10 @@ const get_all_tickets = async () => {
 }
 
 
-const get_ticket_by_id=async({ticket_id})=>{
-    const resp = await fetch(baseUrl+"tickets/"+ticket_id);
+const get_ticket_by_id=async({vehicle_number})=>{
+    const resp = await fetch(baseUrl+"tickets/"+vehicle_number);
     if (resp.ok) return resp.json()
-    else throw Error(`error getting ticket of id ${ticket_id}`)
+    else throw Error(`error getting ticket of id ${vehicle_number}`)
 }
 
 

@@ -10,5 +10,10 @@ app.add_middleware(
     allow_methods=['GET','POST','DELETE']
 )
 
+@app.get('/health')
+def health_check():
+    return {
+        "meassage":"ok"
+    }
 
 app.include_router(vehicles.router)
